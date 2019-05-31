@@ -3,12 +3,12 @@
 using BinaryBuilder
 
 name = "FreeType2"
-version = v"2.9.1"
+version = v"2.10.0"
 
 # Collection of sources required to build FreeType2
 sources = [
-    "https://download.savannah.gnu.org/releases/freetype/freetype-2.9.1.tar.gz" =>
-    "ec391504e55498adceb30baceebd147a6e963f636eb617424bcfc47a169898ce",
+    "https://download.savannah.gnu.org/releases/freetype/freetype-2.10.0.tar.gz" =>
+    "955e17244e9b38adb0c98df66abb50467312e6bb70eac07e49ce6bd1a20e809a",
 
 ]
 
@@ -18,7 +18,7 @@ cd $WORKSPACE/srcdir
 
 if [[ "${target}" == *mingw* ]]; then
 
-cd freetype-2.9.1/builds
+cd freetype-2.10.0/builds
 cat > exports.patch << 'END'
 --- exports.mk
 +++ exports.mk
@@ -42,7 +42,7 @@ cd ..
 
 else
 
-cd freetype-2.9.1
+cd freetype-2.10.0
 mkdir build && cd build
 CMAKE_FLAGS="-DCMAKE_INSTALL_PREFIX=${prefix} -DCMAKE_TOOLCHAIN_FILE=/opt/${target}/${target}.toolchain"
 CMAKE_FLAGS="${CMAKE_FLAGS} -DBUILD_SHARED_LIBS=true"
@@ -57,21 +57,7 @@ make install
 
 # These are the platforms we will build for by default, unless further
 # platforms are passed in on the command line
-platforms = [
-    Linux(:i686, libc=:glibc),
-    Linux(:x86_64, libc=:glibc),
-    Linux(:aarch64, libc=:glibc),
-    Linux(:armv7l, libc=:glibc, call_abi=:eabihf),
-    Linux(:powerpc64le, libc=:glibc),
-    Linux(:i686, libc=:musl),
-    Linux(:x86_64, libc=:musl),
-    Linux(:aarch64, libc=:musl),
-    Linux(:armv7l, libc=:musl, call_abi=:eabihf),
-    MacOS(:x86_64),
-    FreeBSD(:x86_64),
-    Windows(:i686),
-    Windows(:x86_64)
-]
+platforms = supported_platforms()
 
 # The products that we will ensure are always built
 products(prefix) = [
@@ -80,6 +66,8 @@ products(prefix) = [
 
 # Dependencies that must be installed before this package can be built
 dependencies = [
+    "https://github.com/staticfloat/Bzip2Builder/releases/download/v1.0.6-1/build_Bzip2.v1.0.6.jl",
+    "https://github.com/bicycle1885/ZlibBuilder/releases/download/v1.0.4/build_Zlib.v1.2.11.jl"
 
 ]
 
